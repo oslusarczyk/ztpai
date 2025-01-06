@@ -1,6 +1,8 @@
 -- CreateTable
+create extension if not exists "uuid-ossp";
+
 CREATE TABLE "User" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "has_admin_privileges" BOOLEAN NOT NULL DEFAULT false,
