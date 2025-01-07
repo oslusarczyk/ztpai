@@ -4,3 +4,4 @@ model User {
   password            String   
   has_admin_privileges Boolean @default(false)
 }
+
