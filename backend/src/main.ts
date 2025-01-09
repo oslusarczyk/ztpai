@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigModule } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -9,6 +11,13 @@ async function bootstrap() {
     isGlobal: true,
     envFilePath: '.env',
   });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('SmartCar API')
     .setDescription('The SmartCar API description')
