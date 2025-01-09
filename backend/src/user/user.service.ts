@@ -1,54 +1,25 @@
-// import { Injectable } from '@nestjs/common';
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
-
-// @Injectable()
-// export class UserService {
-//   create(createUserDto: CreateUserDto) {
-//     return 'This action adds a new user';
-//   }
-
-//   findAll() {
-//     return `This action returns all urssssss`;
-//   }
-
-//   findOne(id: number) {
-//     return `This action returns a #${id} user`;
-//   }
-
-//   update(id: number, updateUserDto: UpdateUserDto) {
-//     return `This action updates a #${id} user`;
-//   }
-
-//   remove(id: number) {
-//     return `This action removes a #${id} user`;
-//   }
-// }
-
-
-
-
-import { Injectable } from '@nestjs/common';
-
-// This should be a real class/interface representing a user entity
-export type User = any;
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { PrismaService } from '@/prisma/prisma.service';
+import { LoginUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UserService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  constructor(private readonly prisma: PrismaService) {}
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find(user => user.username === username);
+  async loginUser(loginUserDto: LoginUserDto): Promise<any> {
+    const { email, password } = loginUserDto;
+    const user = await this.prisma.user.findUnique({
+      where: { email: email },
+    });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Password not found');
+    }
+    return user;
   }
 }
