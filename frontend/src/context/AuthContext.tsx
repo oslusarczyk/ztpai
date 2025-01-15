@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { sendRequest } from "../utils/request";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
-  login: (token: string, isAdmin: boolean) => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
 }
 
@@ -18,24 +19,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const adminFlag = localStorage.getItem("isAdmin") === "true";
+    const token = sessionStorage.getItem("token");
+    const adminFlag = sessionStorage.getItem("isAdmin") === "true";
     if (token) {
       setIsAuthenticated(true);
       setIsAdmin(adminFlag);
     }
   }, []);
 
-  const login = (token: string, isAdmin: boolean) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("isAdmin", JSON.stringify(isAdmin));
+  const login = async (email: string, password: string) => {
+    try {
+      const response = sendRequest("/auth/login", {
+        method: "POST",
+        data: { email, password },
+        requiresAuth: false,
+      });
+      console.log(response);
+      // console.log("addas");
+    } catch (e) {
+      console.log("error");
+    }
+    // sessionStorage.setItem("token", token);
+    sessionStorage.setItem("isAdmin", JSON.stringify(isAdmin));
     setIsAuthenticated(true);
     setIsAdmin(isAdmin);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("isAdmin");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("isAdmin");
     setIsAuthenticated(false);
     setIsAdmin(false);
   };

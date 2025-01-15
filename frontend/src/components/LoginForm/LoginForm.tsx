@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../../context/AuthContext";
 
 interface LoginFormValues {
   email: string;
@@ -8,7 +9,11 @@ interface LoginFormValues {
 }
 
 const LoginForm: React.FC = () => {
-  const initialValues: LoginFormValues = { email: "", password: "" };
+  const { login } = useAuth();
+  const initialValues: LoginFormValues = {
+    email: "aa@test1.com",
+    password: "testaaaaa",
+  };
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Niepoprawny e-mail").required("Wymagany e-mail"),
@@ -18,7 +23,9 @@ const LoginForm: React.FC = () => {
   });
 
   const handleSubmit = (values: LoginFormValues) => {
+    const { email, password } = values;
     console.log("Dane logowania:", values);
+    login(email, password);
   };
 
   return (

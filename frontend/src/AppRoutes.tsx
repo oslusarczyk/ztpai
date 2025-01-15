@@ -6,8 +6,8 @@ import { Error } from "./pages/error/Error";
 
 export const AppRoutes: React.FC = () => (
   <Routes>
-    <Route path="login" element={<Login />} />
+    <Route path="*" element={<Login />} />
     <Route path="register" element={<Register />} />
-    <Route path="*" element={<Error />} />
+    <Route path="aa" element={<Error />} />
   </Routes>
 );
