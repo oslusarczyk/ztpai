@@ -11,8 +11,8 @@ interface LoginFormValues {
 const LoginForm: React.FC = () => {
   const { login } = useAuth();
   const initialValues: LoginFormValues = {
-    email: "aa@test1.com",
-    password: "testaaaaa",
+    email: "as@test.com",
+    password: "ziemniak123",
   };
 
   const validationSchema = Yup.object({

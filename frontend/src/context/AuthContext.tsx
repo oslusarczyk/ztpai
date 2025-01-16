@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { sendRequest } from "../utils/request";
 
 interface AuthContextType {
@@ -15,8 +16,13 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!sessionStorage.getItem("token")
+  );
+  const [isAdmin, setIsAdmin] = useState<boolean>(
+    sessionStorage.getItem("isAdmin") === "true"
+  );
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -29,20 +35,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = sendRequest("/auth/login", {
+      const response = await sendRequest("/auth/login", {
         method: "POST",
         data: { email, password },
         requiresAuth: false,
       });
-      console.log(response);
-      // console.log("addas");
-    } catch (e) {
-      console.log("error");
+      const { access_token, user } = response;
+
+      if (!access_token || !user) {
+        throw new Error("Invalid response from server");
+      }
+
+      sessionStorage.setItem("token", access_token);
+      sessionStorage.setItem(
+        "isAdmin",
+        JSON.stringify(user.has_admin_privileges)
+      );
+      setIsAuthenticated(true);
+      setIsAdmin(user.has_admin_privileges);
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
     }
-    // sessionStorage.setItem("token", token);
-    sessionStorage.setItem("isAdmin", JSON.stringify(isAdmin));
-    setIsAuthenticated(true);
-    setIsAdmin(isAdmin);
   };
 
   const logout = () => {
