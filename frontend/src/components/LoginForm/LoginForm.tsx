@@ -24,7 +24,6 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (values: LoginFormValues) => {
     const { email, password } = values;
-    console.log("Dane logowania:", values);
     login(email, password);
   };
 
