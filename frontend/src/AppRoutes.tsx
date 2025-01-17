@@ -6,17 +6,21 @@ import { Error } from "./pages/error/Error";
 import { ProtectedRoute } from "./components/protectedRoutes/protectedRoute";
 import { Main } from "./pages/main/main";
 import { UnloggedRoute } from "./components/protectedRoutes/loggedRoute";
+import Layout from "./pages/Layout";
 
 export const AppRoutes: React.FC = () => (
   <Routes>
-    <Route
-      path="/"
-      element={
-        <ProtectedRoute>
-          <Main />
-        </ProtectedRoute>
-      }
-    />
+    <Route element={<Layout />}>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Main />
+          </ProtectedRoute>
+        }
+      />
+    </Route>
+
     <Route
       path="login"
       element={

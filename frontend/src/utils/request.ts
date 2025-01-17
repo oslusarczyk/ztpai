@@ -14,7 +14,6 @@ const sendRequest = async (
   const url = `${BASE_URL}${endpoint}`;
   console.log("Request URL:", url);
 
-  // Prepare headers
   const headers: HeadersInit = {
     ...(data instanceof FormData ? {} : { "Content-Type": "application/json" }),
     ...(requiresAuth && token ? { Authorization: `Bearer ${token}` } : {}),
@@ -35,15 +34,14 @@ const sendRequest = async (
     });
 
     if (!response.ok) {
-      // Handle non-2xx responses
-      const error = await response.json().catch(() => null);
-      throw error || `Error ${response.status}: ${response.statusText}`;
+      const errorData = await response.json();
+      throw { ...errorData, status: response.status };
     }
 
-    return response.json(); // Return parsed JSON for successful responses
+    return response.json();
   } catch (error) {
     console.error("Request failed:", error);
-    throw error; // Propagate error to the caller
+    throw error;
   }
 };
 

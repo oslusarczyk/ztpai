@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAdmin(user.has_admin_privileges);
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      throw error;
     }
   };
 

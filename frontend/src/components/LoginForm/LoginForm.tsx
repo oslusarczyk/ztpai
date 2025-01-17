@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 interface LoginFormValues {
   email: string;
@@ -22,9 +23,17 @@ const LoginForm: React.FC = () => {
       .required("Wymagane hasło"),
   });
 
-  const handleSubmit = (values: LoginFormValues) => {
+  const handleSubmit = async (values: LoginFormValues) => {
     const { email, password } = values;
-    login(email, password);
+    try {
+      await login(email, password);
+    } catch (error: any) {
+      if (error.status === 401) {
+        toast.error("Podane dane są nieprawidłowe.");
+      } else {
+        toast.warning("Wystąpił nieoczekiwany błąd. Spróbuj ponownie.");
+      }
+    }
   };
 
   return (
@@ -52,7 +61,7 @@ const LoginForm: React.FC = () => {
           />
 
           <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Logowanie..." : "Zaloguj się"}
+            Zaloguj się
           </button>
         </Form>
       )}

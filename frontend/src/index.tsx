@@ -4,6 +4,9 @@ import { BrowserRouter } from "react-router";
 import { AppRoutes } from "./AppRoutes";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./styles/basic_styling.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,6 +15,11 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
+        <ToastContainer
+          hideProgressBar={true}
+          position="bottom-right"
+          autoClose={2000}
+        />
         <AppRoutes />
       </AuthProvider>
     </BrowserRouter>

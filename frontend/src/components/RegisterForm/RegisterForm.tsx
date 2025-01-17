@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../utils/network/user";
+import { toast } from "react-toastify";
+
 interface RegisterFormValues {
   email: string;
   password: string;
@@ -28,27 +30,18 @@ const RegisterForm: React.FC = () => {
       .required("Wymagane potwierdzenie hasła"),
   });
 
-  const handleSubmit = async (
-    values: RegisterFormValues,
-    { setSubmitting, setErrors }: any
-  ) => {
+  const handleSubmit = async (values: RegisterFormValues) => {
     const { email, password } = values;
     try {
-      const responseData = await register(email, password);
-      //   console.log(responseData);
-
-      //   setErrorMessage(null); // Clear any previous error messages
-      //   navigate("/login", {
-      //     state: { message: "You have successfully registered!" },
-      //   });
+      await register(email, password);
+      toast.success("Zostałeś pomyślnie zarejestrowany.");
+      navigate("/");
     } catch (error: any) {
-      if (error.response?.status === 409) {
-        // setErrorMessage("The email is already in use."); // Friendly message for 409 errors
+      if (error.status === 409) {
+        toast.error("Ten email jest juz użyty");
       } else {
-        // setErrorMessage("An unexpected error occurred. Please try again later.");
+        toast.warning("Wystąpił nieoczekiwany błąd. Spróbuj ponownie.");
       }
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -89,7 +82,7 @@ const RegisterForm: React.FC = () => {
           />
 
           <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Rejestrowanie..." : "Zarejestruj się"}
+            Zarejestruj się
           </button>
         </Form>
       )}

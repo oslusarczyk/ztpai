@@ -7,10 +7,10 @@ const register = async (email: string, password: string) => {
       data: { email, password },
       requiresAuth: false,
     });
-    console.log(response);
-    return response;
+
+    return response.data;
   } catch (error) {
-    console.error("Registration failed:", error);
+    throw error;
   }
 };
 
