@@ -14,6 +14,8 @@ COPY package*.json ./
 COPY tsconfig.json ./
 COPY src ./src
 
+RUN npx prisma generate
+
 RUN npm run build
 CMD ["npm", "run", "start:dev"]
 EXPOSE 3000

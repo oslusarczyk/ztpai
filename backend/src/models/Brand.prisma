@@ -1,0 +1,7 @@
+model Brand {
+    brand_id   String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    brand_name String
+    cars       Car[]
+
+    @@map("brands")
+}

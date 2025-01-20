@@ -1,4 +1,6 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3000"; // Use env variable or fallback to backend URL
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+console.log("Base URL:", BASE_URL);
+console.log("Base URL:", process.env.REACT_APP_BASE_URL);
 
 interface RequestOptions {
   method: "GET" | "POST" | "PATCH" | "DELETE";

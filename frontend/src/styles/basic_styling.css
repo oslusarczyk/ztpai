@@ -196,6 +196,7 @@ textarea{
 input[type="date"]
 {
     display:block;
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     min-height: 1.2em;

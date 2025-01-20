@@ -1,0 +1,9 @@
+model CarsLocations {
+  id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  car_id      String @db.Uuid
+  location_id String @db.Uuid
+
+  // Relacje
+  car      Car      @relation(fields: [car_id], references: [car_id], onUpdate: Cascade, onDelete: Cascade)
+  location Location @relation(fields: [location_id], references: [location_id], onUpdate: Cascade, onDelete: Cascade)
+}
