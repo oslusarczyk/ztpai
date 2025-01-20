@@ -12,10 +12,11 @@ COPY --from=install /app/node_modules ./node_modules
 
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY webpack-hmr.config.js ./ 
 COPY src ./src
 
 RUN npx prisma generate
 
 RUN npm run build
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "watch:dev"]
 EXPOSE 3000

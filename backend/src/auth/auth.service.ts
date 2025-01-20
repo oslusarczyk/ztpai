@@ -24,4 +24,8 @@ export class AuthService {
       user: payload,
     };
   }
+
+  test() {
+    return 'aasassssa';
+  }
 }

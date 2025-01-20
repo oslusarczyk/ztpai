@@ -32,6 +32,8 @@ services:
       - db
     env_file:
       - .env
+    volumes:
+      - ./src:/app/src
 
 networks:
   pg-network:

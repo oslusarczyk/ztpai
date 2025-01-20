@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/navbar.css";
 import SmartCarLogo from "../../assets/smartcar_logo.png";
+import styles from "../../styles/navbar.module.css"; // Import modułu CSS
 
 const Navbar: React.FC = () => {
   const { isAdmin, logout } = useAuth();
@@ -11,11 +11,11 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="flex-column">
-      <div className="header_logo">
+    <nav className={`${styles.nav} flex-column`}>
+      <div className={styles.header_logo}>
         <img src={SmartCarLogo} alt="SmartCar logo" />
       </div>
-      <div className="navParts flex-column">
+      <div className={`${styles.navParts} flex-column`}>
         <Link to="/main">
           <i className="bx bx-home"></i>
           <p>Główna</p>

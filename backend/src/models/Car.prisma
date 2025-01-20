@@ -1,6 +1,6 @@
 model Car {
     car_id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-    brandss_id      String @db.Uuid
+    brand_id        String @db.Uuid
     model           String
     price_per_day   Int
     seats_available Int
@@ -9,7 +9,7 @@ model Car {
     car_description String
 
     // Powiązanie z tabelą Brand
-    brand          Brand           @relation(fields: [brandss_id], references: [brand_id], onUpdate: Cascade, onDelete: Cascade)
+    brand          Brand           @relation(fields: [brand_id], references: [brand_id], onUpdate: Cascade, onDelete: Cascade)
     // Powiązania z tabelami CarsLocations i Reservations
     cars_locations CarsLocations[]
     reservations   Reservation[]
