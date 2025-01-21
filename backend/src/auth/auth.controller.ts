@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from '@/user/dto/create-user.dto';
@@ -23,10 +24,9 @@ export class AuthController {
     return this.authService.signIn(LoginUserDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  @Public()
+  @UseGuards(JwtAuthGuard)
   @Get('test')
-  test() {
-    return this.authService.test();
+  test(@Request() req) {
+    return req.user;
   }
 }

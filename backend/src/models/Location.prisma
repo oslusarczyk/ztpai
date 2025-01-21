@@ -1,6 +1,6 @@
 model Location {
     location_id   String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-    location_name String @db.Uuid
+    location_name String
 
     // Powiązanie z CarsLocations (N:1) i Reservations (N:1)
     cars_locations CarsLocations[]

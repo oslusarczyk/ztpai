@@ -18,6 +18,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       has_admin_privileges: user.has_admin_privileges,
+      test: 'aaa',
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -26,6 +27,6 @@ export class AuthService {
   }
 
   test() {
-    return 'aasassssa';
+    return 'aassasa';
   }
 }
