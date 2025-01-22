@@ -7,9 +7,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth-guard';
 import { BrandsModule } from './brands/brands.module';
 import { LocationsModule } from './locations/locations.module';
+import { CarsModule } from './cars/cars.module';
 
 @Module({
-  imports: [UserModule, AuthModule, BrandsModule, LocationsModule],
+  imports: [UserModule, AuthModule, BrandsModule, LocationsModule, CarsModule],
   controllers: [AppController],
   providers: [
     AppService,

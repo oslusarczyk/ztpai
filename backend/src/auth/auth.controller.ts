@@ -23,10 +23,4 @@ export class AuthController {
   signIn(@Body() LoginUserDto: LoginUserDto) {
     return this.authService.signIn(LoginUserDto);
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('test')
-  test(@Request() req) {
-    return req.user;
-  }
 }
