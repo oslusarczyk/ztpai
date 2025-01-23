@@ -1,5 +1,6 @@
 export class CarDto {
   car_id: string;
+  brand_id?: string;
   model: string;
   price_per_day: number;
   seats_available: number;

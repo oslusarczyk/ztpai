@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Body, Post } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, UseGuards } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CarDto } from './dto/car.dto';
 import { FilterCarsDto } from './dto/filter-cars.dto';
+import { AdminGuard } from '@/guards/admin.guard';
 
 @Controller('cars')
 export class CarsController {
@@ -34,6 +35,7 @@ export class CarsController {
     return this.carsService.getCarById(id);
   }
 
+  @UseGuards(AdminGuard)
   @Post()
   async addCar(@Body() body: any): Promise<CarDto> {
     const { locations, ...carDto } = body;
