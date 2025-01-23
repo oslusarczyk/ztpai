@@ -1,33 +1,42 @@
-import { Controller, Get, Req } from '@nestjs/common';
-import { Request } from 'express'; // lub 'fastify', w zależności od użytego adaptera
+import { Controller, Get, Param, Body, Post } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CarDto } from './dto/car.dto';
+import { FilterCarsDto } from './dto/filter-cars.dto';
 
 @Controller('cars')
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
   @Get()
-  async getAllCars(@Req() request: Request): Promise<CarDto[]> {
-    const location = request.query.location as string | undefined;
-    const brand = request.query.brand as string | undefined;
-    const seats = request.query.seats as string | undefined;
-    const minPrice = request.query.minPrice as string | undefined;
-    const maxPrice = request.query.maxPrice as string | undefined;
-    console.log(request.query);
-    console.log(location, brand, seats, minPrice, maxPrice);
-
-    // const seatsNum = seats ? parseInt(seats, 10) : undefined;
-    // const minPriceNum = minPrice ? parseInt(minPrice, 10) : undefined;
-    // const maxPriceNum = maxPrice ? parseInt(maxPrice, 10) : undefined;
+  async getAllCars(@Body() carDto: FilterCarsDto): Promise<CarDto[]> {
+    console.log(carDto);
+    const location = carDto.location as string | undefined;
+    const brand = carDto.brand as string | undefined;
+    const seats = carDto.seats as number | undefined;
+    const minPrice = carDto.minPrice as number | undefined;
+    const maxPrice = carDto.maxPrice as number | undefined;
 
     return this.carsService.getAllCars(
       location,
       brand,
-      // seatsNum,
-      // minPriceNum,
-      // maxPriceNum,
+      seats,
+      minPrice,
+      maxPrice,
     );
   }
 
-  // @Get('create')
+  @Get('most-popular')
+  async getMostPopularCars() {
+    return this.carsService.getMostPopularCars();
+  }
+
+  @Get(':id')
+  async getCarById(@Param('id') id: string): Promise<CarDto> {
+    return this.carsService.getCarById(id);
+  }
+
+  @Post()
+  async addCar(@Body() body: any): Promise<CarDto> {
+    const { locations, ...carDto } = body;
+    return this.carsService.addCar(carDto, locations || []);
+  }
 }

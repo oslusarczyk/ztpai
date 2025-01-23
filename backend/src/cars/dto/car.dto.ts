@@ -6,4 +6,6 @@ export class CarDto {
   photo: string;
   production_year: number;
   car_description: string;
+  brand?: string;
+  location?: string[];
 }
