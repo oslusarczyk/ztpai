@@ -17,12 +17,12 @@ export class UserService {
       where: { email: email },
     });
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('Nie ma takiego użytkownika');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Password not found');
+      throw new UnauthorizedException('Hasło jest niepoprawne');
     }
     return user;
   }
@@ -35,7 +35,7 @@ export class UserService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Email is already in use');
+      throw new ConflictException('Taki e-mail już istnieje');
     }
     return this.prisma.user.create({
       data: {

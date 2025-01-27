@@ -30,7 +30,7 @@ async function bootstrap() {
     .setTitle('SmartCar API')
     .setDescription('The SmartCar API description')
     .setVersion('1.0')
-    .addTag('cars')
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, documentFactory);
