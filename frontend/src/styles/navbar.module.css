@@ -12,9 +12,6 @@
     background-color: rgba(0,0,0,0.9);
   }
   
-  .header_logo {
-    position: static; 
-  }
   
   .navParts {
     height: 100%;
@@ -27,6 +24,12 @@
   .secondPart {
     width: 100%;
   }
+
+  .header_logo {
+    width: 150px;
+    padding: 5px;
+  }
+  
   
   .navParts a {
     display: flex;
@@ -66,6 +69,7 @@
   @media screen and (max-width:1216px) {
     .header_logo {
       width: 110px;
+      padding: 0px;
     }
   }
   

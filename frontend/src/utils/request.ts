@@ -5,14 +5,18 @@ interface RequestOptions {
   data?: any;
   requiresAuth?: boolean;
   token?: string | null;
+  params?: Record<string, string | number>; // Add support for query parameters
 }
 
 const sendRequest = async (
   endpoint: string,
-  { method, data, requiresAuth = false, token }: RequestOptions
+  { method, data, requiresAuth = false, token, params }: RequestOptions
 ): Promise<any> => {
-  const url = `${BASE_URL}${endpoint}`;
-
+  const queryString = params
+    ? `?${new URLSearchParams(params as Record<string, string>).toString()}`
+    : "";
+  const url = `${BASE_URL}${endpoint}${queryString}`;
+  console.log(url);
   const headers: HeadersInit = {
     ...(data instanceof FormData ? {} : { "Content-Type": "application/json" }),
     ...(requiresAuth && token ? { Authorization: `Bearer ${token}` } : {}),

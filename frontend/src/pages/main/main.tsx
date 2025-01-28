@@ -21,7 +21,6 @@ export const Main: React.FC = () => {
     (async () => {
       try {
         const cars = await getMostPopularCars();
-        console.log(cars);
         setCars(cars);
       } catch (error) {
         console.error(error);
@@ -43,15 +42,6 @@ export const Main: React.FC = () => {
     seats_available: number;
     price_per_day: number;
   };
-
-  // const getLocationText = (count: number): string => {
-  //   if (count >= 2 && count <= 4) return "lokalizacje";
-  //   if (count > 5) return "lokalizacji";
-  //   return "lokalizacja";
-  // };
-
-  // const getSeatsText = (count: number): string =>
-  //   count > 4 ? "osób" : "osoby";
 
   return (
     <>

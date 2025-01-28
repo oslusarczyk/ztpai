@@ -5,6 +5,7 @@ import styles from "../../styles/car_details.module.css";
 import basicStyles from "../../styles/basic_styling.module.css";
 import { getLocations } from "../../utils/network/utils";
 import { getSeatsText } from "../../utils/functions";
+import { useAuth } from "../../context/AuthContext";
 
 interface CarDetailsProps {
   car_id: string;
@@ -25,6 +26,7 @@ interface Location {
 
 const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { userId } = useAuth();
   const [car, setCar] = useState<CarDetailsProps | null>(null);
   const [locations, setLocations] = useState<Location[]>([]);
   const [reservationStartDate, setReservationStartDate] = useState("");
@@ -50,30 +52,10 @@ const CarDetails: React.FC = () => {
     fetchCarDetails();
   }, [id]);
 
-  //   const handleReservation = async (event: React.FormEvent) => {
-  //     event.preventDefault();
-  //     try {
-  //       const response = await fetch("/api/reservations", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           car_id: car?.car_id,
-  //           user_id: "USER_ID_PLACEHOLDER", // Zastąp odpowiednim ID użytkownika
-  //           reservation_start_date: reservationStartDate,
-  //           reservation_end_date: reservationEndDate,
-  //           location_id: selectedLocation,
-  //         }),
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error("Rezerwacja nie powiodła się");
-  //       }
-
-  //       alert("Rezerwacja zakończona sukcesem!");
-  //     } catch (err: any) {
-  //       alert(err.message || "Wystąpił błąd podczas rezerwacji");
-  //     }
-  //   };
+  const handleReservation = async (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("TODO");
+  };
 
   if (loading) return <p>Ładowanie szczegółów samochodu...</p>;
   if (error) return <p>Błąd: {error}</p>;
@@ -111,48 +93,55 @@ const CarDetails: React.FC = () => {
               </p>
             </div>
           </div>
-          {/* <form onSubmit={handleReservation}>
-            <label>
-              Od:
-              <input
-                type="date"
-                value={reservationStartDate}
-                onChange={(e) => setReservationStartDate(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-                required
-              />
-            </label>
-            <label>
-              Do:
-              <input
-                type="date"
-                value={reservationEndDate}
-                onChange={(e) => setReservationEndDate(e.target.value)}
-                min={
-                  reservationStartDate || new Date().toISOString().split("T")[0]
-                }
-                required
-              />
-            </label>
-            <label>
-              Miejsce wynajmu:
-              <select
-                value={selectedLocation || ""}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                required
-              >
-                <option value="">Wybierz lokalizację</option>
-                {locations.map((loc) => (
-                  <option key={loc.location_id} value={loc.location_id}>
-                    {loc.location_name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button type="submit" className="buttonClass">
-              Zarezerwuj
-            </button>
-          </form> */}
+          <div className={`${styles.description} ${basicStyles.flexColumn}`}>
+            <h2>Opis</h2>
+            <p>{car.car_description}</p>
+            <div className={`${styles.reservation_form}`}>
+              <form onSubmit={handleReservation}>
+                <label>
+                  Od:
+                  <input
+                    type="date"
+                    value={reservationStartDate}
+                    onChange={(e) => setReservationStartDate(e.target.value)}
+                    min={new Date().toISOString().split("T")[0]}
+                    required
+                  />
+                </label>
+                <label>
+                  Do:
+                  <input
+                    type="date"
+                    value={reservationEndDate}
+                    onChange={(e) => setReservationEndDate(e.target.value)}
+                    min={
+                      reservationStartDate ||
+                      new Date().toISOString().split("T")[0]
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  Miejsce wynajmu:
+                  <select
+                    value={selectedLocation || ""}
+                    onChange={(e) => setSelectedLocation(e.target.value)}
+                    required
+                  >
+                    <option value="">Wybierz lokalizację</option>
+                    {locations.map((loc) => (
+                      <option key={loc.location_id} value={loc.location_id}>
+                        {loc.location_name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button type="submit" className="buttonClass">
+                  Zarezerwuj
+                </button>
+              </form>
+            </div>
+          </div>
         </>
       ) : (
         <p>Nie znaleziono szczegółów samochodu.</p>

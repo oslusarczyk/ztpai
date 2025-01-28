@@ -5,6 +5,7 @@ import { sendRequest } from "../utils/request";
 interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
+  userId: string;
   login: (email: string, password: string) => void;
   logout: () => void;
 }
@@ -22,14 +23,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState<boolean>(
     sessionStorage.getItem("isAdmin") === "true"
   );
+  const [userId, setUserId] = useState<string>(
+    sessionStorage.getItem("userId") || ""
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const adminFlag = sessionStorage.getItem("isAdmin") === "true";
+    const userId = sessionStorage.getItem("userId") || "";
     if (token) {
       setIsAuthenticated(true);
       setIsAdmin(adminFlag);
+      setUserId(userId);
     }
   }, []);
 
@@ -47,12 +53,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       sessionStorage.setItem("token", access_token);
+      sessionStorage.setItem("userId", user.id);
       sessionStorage.setItem(
         "isAdmin",
         JSON.stringify(user.has_admin_privileges)
       );
       setIsAuthenticated(true);
       setIsAdmin(user.has_admin_privileges);
+      setUserId(user.id);
       navigate("/");
     } catch (error) {
       throw error;
@@ -62,12 +70,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("isAdmin");
+    sessionStorage.removeItem("userId");
     setIsAuthenticated(false);
     setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAdmin, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, isAdmin, userId, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

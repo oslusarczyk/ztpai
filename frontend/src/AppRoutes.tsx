@@ -6,6 +6,7 @@ import { Error } from "./pages/error/Error";
 import { ProtectedRoute } from "./components/protectedRoutes/protectedRoute";
 import { Main } from "./pages/main/Main";
 import { UnloggedRoute } from "./components/protectedRoutes/loggedRoute";
+import History from "./pages/history/History";
 import Layout from "./pages/Layout";
 import CarDetails from "./pages/carDetails/carDetails";
 
@@ -26,6 +27,15 @@ export const AppRoutes: React.FC = () => (
         element={
           <ProtectedRoute>
             <CarDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="history"
+        element={
+          <ProtectedRoute>
+            <History />
           </ProtectedRoute>
         }
       />

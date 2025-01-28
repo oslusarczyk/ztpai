@@ -1,0 +1,13 @@
+@media screen and (max-width:768px){
+
+    .pending_reservation_wrapper{
+        padding: 0 0 12vh 0;
+    }
+
+    .carCard p{
+        width: 55%;
+    }
+    .rightPart .price{
+        width: 35%;
+    }
+}
