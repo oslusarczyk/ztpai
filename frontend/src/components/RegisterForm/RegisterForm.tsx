@@ -1,5 +1,6 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import styles from "../../styles/basic_styling.module.css";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../utils/network/user";
@@ -52,7 +53,7 @@ const RegisterForm: React.FC = () => {
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
-        <Form className="flex-column">
+        <Form className={styles.flexColumn}>
           <label htmlFor="email">E-mail</label>
           <Field type="email" name="email" placeholder="test@gmail.com" />
           <ErrorMessage

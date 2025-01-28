@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import SmartCarLogo from "../../assets/smartcar_logo.png";
-import styles from "../../styles/navbar.module.css"; // Import modułu CSS
+import styles from "../../styles/navbar.module.css";
+import basicStyles from "../../styles/basic_styling.module.css";
 
 const Navbar: React.FC = () => {
   const { isAdmin, logout } = useAuth();
@@ -11,12 +12,12 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`${styles.nav} flex-column`}>
+    <nav className={`${styles.nav} ${basicStyles.flexColumn}`}>
       <div className={styles.header_logo}>
         <img src={SmartCarLogo} alt="SmartCar logo" />
       </div>
-      <div className={`${styles.navParts} flex-column`}>
-        <Link to="/main">
+      <div className={`${styles.navParts} ${basicStyles.flexColumn}`}>
+        <Link to="/">
           <i className="bx bx-home"></i>
           <p>Główna</p>
         </Link>
@@ -42,7 +43,7 @@ const Navbar: React.FC = () => {
           </>
         )}
 
-        <Link className="end logout-button" to={"/"} onClick={handleLogout}>
+        <Link className="end" to={"/"} onClick={handleLogout}>
           <i className="bx bx-log-out"></i>
           <p>Wyloguj</p>
         </Link>

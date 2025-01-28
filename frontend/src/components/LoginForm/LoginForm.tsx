@@ -1,5 +1,6 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import styles from "../../styles/basic_styling.module.css";
 import * as Yup from "yup";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
@@ -43,7 +44,7 @@ const LoginForm: React.FC = () => {
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
-        <Form className="flex-column">
+        <Form className={styles.flexColumn}>
           <label htmlFor="email">E-mail</label>
           <Field type="email" name="email" placeholder="test@gmail.com" />
           <ErrorMessage

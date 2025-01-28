@@ -1,6 +1,4 @@
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-console.log("Base URL:", BASE_URL);
-console.log("Base URL:", process.env.REACT_APP_BASE_URL);
 
 interface RequestOptions {
   method: "GET" | "POST" | "PATCH" | "DELETE";
@@ -14,7 +12,6 @@ const sendRequest = async (
   { method, data, requiresAuth = false, token }: RequestOptions
 ): Promise<any> => {
   const url = `${BASE_URL}${endpoint}`;
-  console.log("Request URL:", url);
 
   const headers: HeadersInit = {
     ...(data instanceof FormData ? {} : { "Content-Type": "application/json" }),
@@ -34,12 +31,10 @@ const sendRequest = async (
       headers,
       body,
     });
-
     if (!response.ok) {
       const errorData = await response.json();
       throw { ...errorData, status: response.status };
     }
-
     return response.json();
   } catch (error) {
     console.error("Request failed:", error);
