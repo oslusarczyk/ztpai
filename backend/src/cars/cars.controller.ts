@@ -6,6 +6,8 @@ import {
   Post,
   UseGuards,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,10 +17,14 @@ import {
   ApiParam,
   ApiBearerAuth,
   ApiQuery,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { CarsService } from './cars.service';
 import { CarDto } from './dto/car.dto';
 import { FilterCarsDto } from './dto/filter-cars.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 import { AdminGuard } from '@/guards/admin.guard';
 
 @ApiTags('Cars')
@@ -129,8 +135,38 @@ export class CarsController {
     description: 'Szczegóły nowego auta.',
     type: CarDto,
   })
-  async addCar(@Body() body: any): Promise<CarDto> {
-    const { locations, ...carDto } = body;
-    return this.carsService.addCar(carDto, locations || []);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('car_photo', {
+      storage: diskStorage({
+        destination: path.join(__dirname, '../../frontend/src/assets/'),
+        filename: (req, file, cb) => {
+          const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+          const ext = path.extname(file.originalname);
+          cb(null, `${uniqueSuffix}${ext}`);
+        },
+      }),
+      limits: { fileSize: 1024 * 1024 },
+      fileFilter: (req, file, cb) => {
+        if (!['image/png', 'image/jpeg'].includes(file.mimetype)) {
+          return cb(new Error('Unsupported file type'), false);
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  async addCar(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: any,
+  ): Promise<CarDto> {
+    let { locations, ...carDto } = body;
+    if (typeof locations === 'string') {
+      try {
+        locations = JSON.parse(locations);
+      } catch (error) {
+        locations = [locations];
+      }
+      return this.carsService.addCar(carDto, locations || [], file);
+    }
   }
 }

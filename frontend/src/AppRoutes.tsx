@@ -4,7 +4,7 @@ import { Login } from "./pages/login/Login";
 import { Register } from "./pages/register/Register";
 import { Error } from "./pages/error/Error";
 import { ProtectedRoute } from "./components/protectedRoutes/protectedRoute";
-import { Main } from "./pages/main/Main";
+import { Main } from "./pages/main/main";
 import { UnloggedRoute } from "./components/protectedRoutes/loggedRoute";
 import History from "./pages/history/History";
 import Layout from "./pages/Layout";
@@ -12,6 +12,7 @@ import CarDetails from "./pages/carDetails/carDetails";
 import Cars from "./pages/cars/cars";
 import { AdminRoute } from "./components/protectedRoutes/adminRoute";
 import CarAdmin from "./pages/carAdmin/CarAdmin";
+import AddCar from "./pages/addCar/addCar";
 
 export const AppRoutes: React.FC = () => (
   <Routes>
@@ -57,6 +58,15 @@ export const AppRoutes: React.FC = () => (
         element={
           <AdminRoute>
             <CarAdmin />
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="addCar"
+        element={
+          <AdminRoute>
+            <AddCar />
           </AdminRoute>
         }
       />

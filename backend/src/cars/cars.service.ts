@@ -1,10 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CarDto } from './dto/car.dto';
 import { PrismaService } from '@/prisma/prisma.service';
+import * as fs from 'fs';
+import * as path from 'path';
+import { min } from 'class-validator';
 
 @Injectable()
 export class CarsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly UPLOAD_DIRECTORY = path.join(
+    __dirname,
+    '../../../public/src/assets',
+  );
+
+  constructor(private readonly prisma: PrismaService) {
+    if (!fs.existsSync(this.UPLOAD_DIRECTORY)) {
+      fs.mkdirSync(this.UPLOAD_DIRECTORY, { recursive: true });
+    }
+  }
 
   async getAllCars(
     location?: string,
@@ -13,8 +25,8 @@ export class CarsService {
     minPrice?: number,
     maxPrice?: number,
   ): Promise<CarDto[]> {
-    const minPriceInt = minPrice ? Number(minPrice) : undefined;
-    const maxPriceInt = maxPrice ? Number(maxPrice) : undefined;
+    const parsedMinPrice = minPrice ? Number(minPrice) : undefined;
+    const parsedMaxPrice = maxPrice ? Number(maxPrice) : undefined;
     const cars = await this.prisma.car.findMany({
       where: {
         ...(brand && {
@@ -24,12 +36,8 @@ export class CarsService {
         }),
         ...(seats && { seats_available: seats }),
         price_per_day: {
-          ...(minPriceInt !== undefined && !isNaN(minPriceInt)
-            ? { gte: minPriceInt }
-            : {}),
-          ...(maxPriceInt !== undefined && !isNaN(maxPriceInt)
-            ? { lte: maxPriceInt }
-            : {}),
+          ...(parsedMinPrice !== undefined && { gte: parsedMinPrice }),
+          ...(parsedMaxPrice !== undefined && { lte: parsedMaxPrice }),
         },
         ...(location && {
           cars_locations: {
@@ -136,15 +144,24 @@ export class CarsService {
     return result;
   }
 
-  async addCar(carDto: CarDto, locations_id: string[]): Promise<CarDto> {
+  async addCar(
+    carDto: CarDto,
+    locations_id: string[],
+    file?: Express.Multer.File,
+  ): Promise<CarDto> {
+    let filePath = '';
+
+    if (file) {
+      filePath = `${file.filename}`;
+    }
     const newCar = await this.prisma.car.create({
       data: {
         brand_id: carDto.brand_id,
         model: carDto.model,
-        price_per_day: carDto.price_per_day,
-        seats_available: carDto.seats_available,
-        photo: carDto.photo,
-        production_year: carDto.production_year,
+        price_per_day: Number(carDto.price_per_day),
+        seats_available: Number(carDto.seats_available),
+        photo: filePath,
+        production_year: Number(carDto.production_year),
         car_description: carDto.car_description,
         cars_locations: {
           create: locations_id.map((locId) => ({

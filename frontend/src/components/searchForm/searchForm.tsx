@@ -3,13 +3,14 @@ import basicStyles from "../../styles/basic_styling.module.css";
 import styles from "../../styles/main.module.css";
 import { getBrands, getLocations } from "../../utils/network/utils";
 import { Locations } from "../../utils/types";
+import { useSearchParams } from "react-router-dom"; // Import this
 
 export interface FilterParams {
   location?: string;
   brand?: string;
   seats?: string;
-  price_min?: string;
-  price_max?: string;
+  minPrice?: string;
+  maxPrice?: string;
 }
 
 type Brands = {
@@ -25,6 +26,13 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
   const [locations, setLocations] = useState<Locations[]>();
   const [brands, setBrands] = useState<Brands[]>();
   const [filters, setFilters] = useState<FilterParams>({});
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const locationFromUrl = searchParams.get("location");
+    if (locationFromUrl) {
+      setFilters((prev) => ({ ...prev, location: locationFromUrl }));
+    }
+  }, [searchParams]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
@@ -64,7 +72,11 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
       <form className={`${basicStyles.flexColumn} ${styles.search}`}>
         <label>
           Miejsce wynajmu:
-          <select name="location" onChange={handleChange}>
+          <select
+            name="location"
+            onChange={handleChange}
+            value={filters.location || ""}
+          >
             <option value="">Wszystkie</option>
             {locations &&
               locations.map((location, index) => (
@@ -103,7 +115,7 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
             Cena min:
             <input
               type="number"
-              name="price_min"
+              name="minPrice"
               min="0"
               max="500"
               onChange={handleChange}
@@ -113,7 +125,7 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
             Cena max:
             <input
               type="number"
-              name="price_max"
+              name="maxPrice"
               min="0"
               max="500"
               onChange={handleChange}

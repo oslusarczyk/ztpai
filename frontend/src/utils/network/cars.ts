@@ -46,4 +46,20 @@ const getCars = async (filters: FilterParams) => {
   }
 };
 
-export { getMostPopularCars, getCarDetails, getCars };
+const addCar = async (formData: FormData) => {
+  try {
+    const token = getToken();
+    const response = await sendRequest(`/cars`, {
+      method: "POST",
+      requiresAuth: true,
+      token,
+      data: formData,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { getMostPopularCars, getCarDetails, getCars, addCar };

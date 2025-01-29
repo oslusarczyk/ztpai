@@ -6,6 +6,7 @@ import basicStyles from "../../styles/basic_styling.module.css";
 import { getLocations } from "../../utils/network/utils";
 import { getSeatsText } from "../../utils/functions";
 import { useAuth } from "../../context/AuthContext";
+import { addReservation } from "../../utils/network/reservations";
 import { Locations as Location } from "../../utils/types";
 
 interface CarDetailsProps {
@@ -50,6 +51,13 @@ const CarDetails: React.FC = () => {
 
   const handleReservation = async (event: React.FormEvent) => {
     event.preventDefault();
+    addReservation({
+      reservation_start_date: reservationStartDate,
+      reservation_end_date: reservationEndDate,
+      location_id: selectedLocation || "",
+      car_id: id || "",
+      user_id: userId,
+    });
     console.log("TODO");
   };
 

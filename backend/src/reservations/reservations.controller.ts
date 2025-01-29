@@ -84,7 +84,7 @@ export class ReservationsController {
     status: 400,
     description: 'Invalid input data.',
   })
-  async addReservation(@Body() body: ReservationDto) {
+  async addReservation(@Body() body) {
     const {
       reservation_start_date,
       reservation_end_date,

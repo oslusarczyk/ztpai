@@ -44,3 +44,8 @@ export interface Car {
   seats_available: number;
   price_per_day: number;
 }
+
+export interface Brands {
+  brand_id: number;
+  brand_name: string;
+}

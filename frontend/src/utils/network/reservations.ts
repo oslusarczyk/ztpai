@@ -54,8 +54,39 @@ const updateReservationStatus = async (id: string, status: Status) => {
   }
 };
 
+const addReservation = async (reservation: {
+  reservation_start_date: string;
+  reservation_end_date: string;
+  location_id: string;
+  car_id: string;
+  user_id: string;
+}) => {
+  try {
+    console.log(reservation);
+    const token = getToken();
+    const response = await sendRequest(`/reservations`, {
+      method: "POST",
+      requiresAuth: true,
+      token,
+      data: {
+        ...reservation,
+        reservation_start_date: new Date(
+          reservation.reservation_start_date
+        ).toISOString(), // 🔥 Ensure ISO format
+        reservation_end_date: new Date(
+          reservation.reservation_end_date
+        ).toISOString(), // 🔥 Ensure ISO format
+      },
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export {
   getReservationsByUserId,
   getPendingReservations,
   updateReservationStatus,
+  addReservation,
 };

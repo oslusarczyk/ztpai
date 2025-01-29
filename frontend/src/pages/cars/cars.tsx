@@ -22,12 +22,8 @@ const Cars: React.FC = () => {
   const carsPerPage = window.innerWidth <= 1024 ? 3 : 6;
 
   const handleFilterChange = async (filters: FilterParams) => {
-    console.log(filters);
-    // const filtered = await fetchCars(filters);
-    // setFilteredCars(filtered);
     const filtered = await getCars(filters);
     setFilteredCars(filtered);
-    console.log(filtered);
     setCurrentPage(1);
   };
 
