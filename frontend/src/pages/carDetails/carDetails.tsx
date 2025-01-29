@@ -6,6 +6,7 @@ import basicStyles from "../../styles/basic_styling.module.css";
 import { getLocations } from "../../utils/network/utils";
 import { getSeatsText } from "../../utils/functions";
 import { useAuth } from "../../context/AuthContext";
+import { Locations as Location } from "../../utils/types";
 
 interface CarDetailsProps {
   car_id: string;
@@ -17,11 +18,6 @@ interface CarDetailsProps {
   car_description: string;
   brand: string;
   location: string;
-}
-
-interface Location {
-  location_id: string;
-  location_name: string;
 }
 
 const CarDetails: React.FC = () => {

@@ -4,21 +4,7 @@ import basicStyles from "../../styles/basic_styling.module.css";
 import { getLocations } from "../../utils/network/utils";
 import { getMostPopularCars } from "../../utils/network/cars";
 import { getSeatsText, getLocationText } from "../../utils/functions";
-
-export interface Locations {
-  location_id: number;
-  location_name: string;
-}
-
-export interface Car {
-  car_id: number;
-  brand: string;
-  model: string;
-  photo: string;
-  location: string[];
-  seats_available: number;
-  price_per_day: number;
-}
+import { Locations, Car } from "../../utils/types";
 
 export const Main: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);

@@ -10,6 +10,8 @@ import History from "./pages/history/History";
 import Layout from "./pages/Layout";
 import CarDetails from "./pages/carDetails/carDetails";
 import Cars from "./pages/cars/cars";
+import { AdminRoute } from "./components/protectedRoutes/adminRoute";
+import CarAdmin from "./pages/carAdmin/CarAdmin";
 
 export const AppRoutes: React.FC = () => (
   <Routes>
@@ -47,6 +49,15 @@ export const AppRoutes: React.FC = () => (
           <ProtectedRoute>
             <History />
           </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="carAdmin"
+        element={
+          <AdminRoute>
+            <CarAdmin />
+          </AdminRoute>
         }
       />
     </Route>

@@ -1,0 +1,100 @@
+.button_wrapper{
+    justify-content: space-around;
+}
+
+button.cancel{
+    background-color: red;
+}
+
+p.reservation_email{
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+@media screen and (max-width:768px){
+    .pending_reservation_wrapper{
+        padding: 0 0 12vh 0;
+    }
+
+    .carCard h4{
+        text-align: center;
+    }
+
+    .carCard p{
+        width: 50%;
+    }
+    .rightPart .price{
+        width: 40%;
+    }
+
+    .button_wrapper{
+        width: 60%;
+    }
+
+    .button_wrapper button{
+        padding: 15px 20px;
+        margin-top: 0;
+        font-size: 1.2rem;
+    }
+}
+
+.wrapper_main{
+    align-items: center;
+}
+
+.form_wrapper{
+    margin-top:5vh;
+    padding: 15px 20px;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.55)
+}
+
+.form_wrapper form{
+    padding: 10px;
+    align-items: center;
+    gap: 10px;
+}
+
+.form_wrapper form label{
+    width: 100%
+}
+
+.form_wrapper form button{
+    width: 50%;
+}
+
+.checkbox{
+    width: 100%;
+}
+
+.checkbox span{
+    font-weight: 300;
+}
+
+.form_wrapper form .checkbox_wrapper label{
+    display: flex;
+    flex-direction: row;
+}
+
+@media screen and (max-width:768px){
+    .wrapper_main{
+        padding: 0 0 12vh 0;
+    }
+
+    input::file-selector-button {
+        font-size: 1rem;
+      }
+
+    .form_wrapper{
+        width: 90%;
+    }
+
+    .checkbox_wrapper{
+        flex-wrap: wrap;
+    }
+
+    .form_wrapper form button{
+        width: 80%;
+    }
+}

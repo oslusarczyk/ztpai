@@ -110,7 +110,7 @@ export class ReservationsController {
     );
   }
 
-  @Put(':id/status')
+  @Put(':id')
   @ApiOperation({ summary: 'Zaktualizuj status danej rezerwacji' })
   @ApiParam({
     name: 'id',
@@ -120,8 +120,7 @@ export class ReservationsController {
     description: 'Nowy status rezerwacji',
     schema: {
       example: {
-        id: '3b783bc4-9409-49d0-a62c-8d7ad5fad2e9',
-        action: 'confirmed',
+        status: 'confirmed',
       },
     },
   })
@@ -136,7 +135,7 @@ export class ReservationsController {
   })
   async updateReservationStatus(
     @Param('id') id: string,
-    @Body('action') reservation_status: ReservationStatus,
+    @Body('status') reservation_status: ReservationStatus,
   ) {
     if (!id || !reservation_status) {
       throw new Error('Missing reservation ID or action');

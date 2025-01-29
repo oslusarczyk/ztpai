@@ -5,7 +5,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import basicStyles from "../../styles/basic_styling.module.css";
 import styles from "../../styles/main.module.css";
 import { getCars } from "../../utils/network/cars";
-import { Car } from "../main/Main";
+import { Car } from "../../utils/types";
 
 export interface FilterParams {
   location?: string;

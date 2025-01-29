@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import basicStyles from "../../styles/basic_styling.module.css";
 import styles from "../../styles/main.module.css";
 import { getBrands, getLocations } from "../../utils/network/utils";
-import { Locations } from "../../pages/main/Main";
+import { Locations } from "../../utils/types";
 
 export interface FilterParams {
   location?: string;

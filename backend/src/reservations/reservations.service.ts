@@ -41,6 +41,11 @@ export class ReservationsService {
           },
         },
         location: true,
+        user: {
+          select: {
+            email: true,
+          },
+        },
       },
     });
 

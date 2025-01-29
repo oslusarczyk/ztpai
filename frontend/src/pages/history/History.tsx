@@ -1,38 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getReservationsByUserId } from "../../utils/network/reservations";
+import {
+  getReservationsByUserId,
+  Status,
+} from "../../utils/network/reservations";
 import { formatDate } from "../../utils/functions";
 import styles from "../../styles/history.module.css";
 import basicStyles from "../../styles/basic_styling.module.css";
-
-interface Reservation {
-  reservation_id: string;
-  user_id: string;
-  car_id: string;
-  location_id: string;
-  reservation_start_date: string;
-  reservation_end_date: string;
-  reservation_price: number;
-  reservation_status: string;
-  car: {
-    car_id: string;
-    brand_id: string;
-    model: string; // carName
-    price_per_day: number;
-    seats_available: number;
-    photo: string;
-    production_year: number;
-    car_description: string;
-    brand: {
-      brand_id: string;
-      brand_name: string;
-    };
-  };
-  location: {
-    location_id: string;
-    location_name: string; // locationName
-  };
-}
+import { Reservation } from "../../utils/types";
 
 const History: React.FC = () => {
   const [confirmed, setConfirmed] = useState<Reservation[]>([]);
@@ -44,13 +19,13 @@ const History: React.FC = () => {
       try {
         const confirmedReservations = await getReservationsByUserId(
           userId,
-          "confirmed"
+          Status.CONFIRMED
         );
         setConfirmed(confirmedReservations);
 
         const pendingReservations = await getReservationsByUserId(
           userId,
-          "pending"
+          Status.PENDING
         );
         setPending(pendingReservations);
       } catch (error) {
@@ -80,7 +55,9 @@ const History: React.FC = () => {
         </h2>
         <div>
           <div
-            className={`${styles.reservation_wrapper} ${basicStyles.grid_row}`}
+            className={`${styles.reservation_wrapper} ${basicStyles.grid_row} ${
+              !isConfirmed ? styles.pending_reservation_wrapper : ""
+            }`}
           >
             {reservations.map((reservation, index) => (
               <div key={index} className={basicStyles.carCard}>

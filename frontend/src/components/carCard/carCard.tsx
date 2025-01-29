@@ -1,5 +1,5 @@
 import React from "react";
-import { Car } from "../../pages/main/Main";
+import { Car } from "../../utils/types";
 import basicStyles from "../../styles/basic_styling.module.css";
 import { getLocationText, getSeatsText } from "../../utils/functions";
 

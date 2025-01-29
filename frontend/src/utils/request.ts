@@ -1,7 +1,7 @@
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 interface RequestOptions {
-  method: "GET" | "POST" | "PATCH" | "DELETE";
+  method: "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
   data?: any;
   requiresAuth?: boolean;
   token?: string | null;
