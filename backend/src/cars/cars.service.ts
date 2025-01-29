@@ -5,9 +5,6 @@ import { PrismaService } from '@/prisma/prisma.service';
 @Injectable()
 export class CarsService {
   constructor(private readonly prisma: PrismaService) {}
-  findAll() {
-    return `This action returns all cars`;
-  }
 
   async getAllCars(
     location?: string,
@@ -16,6 +13,8 @@ export class CarsService {
     minPrice?: number,
     maxPrice?: number,
   ): Promise<CarDto[]> {
+    const minPriceInt = minPrice ? Number(minPrice) : undefined;
+    const maxPriceInt = maxPrice ? Number(maxPrice) : undefined;
     const cars = await this.prisma.car.findMany({
       where: {
         ...(brand && {
@@ -25,29 +24,45 @@ export class CarsService {
         }),
         ...(seats && { seats_available: seats }),
         price_per_day: {
-          ...(minPrice && { gte: minPrice }),
-          ...(maxPrice && { lte: maxPrice }),
+          ...(minPriceInt !== undefined && !isNaN(minPriceInt)
+            ? { gte: minPriceInt }
+            : {}),
+          ...(maxPriceInt !== undefined && !isNaN(maxPriceInt)
+            ? { lte: maxPriceInt }
+            : {}),
         },
         ...(location && {
           cars_locations: {
             some: {
               location: {
-                location_id: location,
+                location_name: location,
               },
             },
           },
         }),
       },
+      include: {
+        brand: true,
+        cars_locations: {
+          include: {
+            location: true,
+          },
+        },
+      },
     });
 
     return cars.map((car) => ({
-      car_id: String(car.car_id),
+      car_id: car.car_id,
       model: car.model,
       price_per_day: car.price_per_day,
       seats_available: car.seats_available,
       photo: car.photo,
       production_year: car.production_year,
       car_description: car.car_description,
+      brand: car.brand.brand_name,
+      location: car.cars_locations.map(
+        (carLocation) => carLocation.location.location_name,
+      ),
     }));
   }
 
@@ -57,6 +72,12 @@ export class CarsService {
         _count: {
           select: { reservations: true },
         },
+        cars_locations: {
+          include: {
+            location: true,
+          },
+        },
+        brand: true,
       },
       orderBy: {
         reservations: {
@@ -74,6 +95,10 @@ export class CarsService {
       photo: car.photo,
       production_year: car.production_year,
       car_description: car.car_description,
+      brand: car.brand.brand_name,
+      location: car.cars_locations.map(
+        (carLocation) => carLocation.location.location_name,
+      ),
     }));
   }
 
@@ -94,7 +119,6 @@ export class CarsService {
       throw new NotFoundException(`Car with ID ${id} not found`);
     }
 
-    // Mapujemy do CarDto (przykład – dostosuj do swoich pól):
     const result: CarDto = {
       car_id: car.car_id,
       model: car.model,

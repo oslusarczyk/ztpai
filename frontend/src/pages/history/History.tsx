@@ -1,19 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getReservationsByUserId } from "../../utils/network/reservations";
+import { formatDate } from "../../utils/functions";
 import styles from "../../styles/history.module.css";
 import basicStyles from "../../styles/basic_styling.module.css";
 
 interface Reservation {
-  photo: string;
-  carName: string;
-  reservationStartDate: string;
-  reservationEndDate: string;
-  locationName: string;
-  reservationPrice: number;
+  reservation_id: string;
+  user_id: string;
+  car_id: string;
+  location_id: string;
+  reservation_start_date: string;
+  reservation_end_date: string;
+  reservation_price: number;
+  reservation_status: string;
+  car: {
+    car_id: string;
+    brand_id: string;
+    model: string; // carName
+    price_per_day: number;
+    seats_available: number;
+    photo: string;
+    production_year: number;
+    car_description: string;
+    brand: {
+      brand_id: string;
+      brand_name: string;
+    };
+  };
+  location: {
+    location_id: string;
+    location_name: string; // locationName
+  };
 }
-
-type ReservationStatus = "confirmed";
 
 const History: React.FC = () => {
   const [confirmed, setConfirmed] = useState<Reservation[]>([]);
@@ -27,17 +46,13 @@ const History: React.FC = () => {
           userId,
           "confirmed"
         );
-        if (confirmedReservations.length > 0) {
-          setConfirmed(confirmedReservations);
-        }
+        setConfirmed(confirmedReservations);
 
-        const pendingReservatons = await getReservationsByUserId(
+        const pendingReservations = await getReservationsByUserId(
           userId,
           "pending"
         );
-        if (pendingReservatons.length > 0) {
-          setPending(pendingReservatons);
-        }
+        setPending(pendingReservations);
       } catch (error) {
         console.error(error);
       }
@@ -63,36 +78,43 @@ const History: React.FC = () => {
         <h2>
           {isConfirmed ? "Potwierdzone rezerwacje" : "Oczekujące rezerwacje"}
         </h2>
-        <div className={`${styles.reservationWrapper} ${basicStyles.gridRow}`}>
-          {reservations.map((reservation, index) => (
-            <div key={index} className={basicStyles.carCard}>
-              <div className={basicStyles.leftPart}>
-                <img
-                  src={require(`../../assets/${reservation.photo}`)}
-                  alt="car image"
-                />
+        <div>
+          <div
+            className={`${styles.reservation_wrapper} ${basicStyles.grid_row}`}
+          >
+            {reservations.map((reservation, index) => (
+              <div key={index} className={basicStyles.carCard}>
+                <div className={basicStyles.leftPart}>
+                  <img
+                    src={require(`../../assets/${reservation.car.photo}`)}
+                    alt="car image"
+                  />
+                </div>
+                <div
+                  className={`${basicStyles.rightPart} ${basicStyles.flexColumn}`}
+                >
+                  <h4 className={styles.carName}>
+                    {reservation.car.brand.brand_name} {reservation.car.model}
+                  </h4>
+                  <p className={styles.reservationDetail}>
+                    <i className="bx bx-calendar"></i> od{" "}
+                    {formatDate(reservation.reservation_start_date)}
+                  </p>
+                  <p className={styles.reservationDetail}>
+                    <i className="bx bx-calendar"></i> do{" "}
+                    {formatDate(reservation.reservation_end_date)}
+                  </p>
+                  <p className={styles.reservationDetail}>
+                    <i className="bx bx-map"></i>{" "}
+                    {reservation.location.location_name}
+                  </p>
+                  <p className={styles.price}>
+                    {reservation.reservation_price} PLN
+                  </p>
+                </div>
               </div>
-              <div
-                className={`${basicStyles.rightPart} ${basicStyles.flexColumn}`}
-              >
-                <h4 className={styles.carName}>{reservation.carName}</h4>
-                <p className={styles.reservationDetail}>
-                  <i className="bx bx-calendar"></i> od{" "}
-                  {reservation.reservationStartDate}
-                </p>
-                <p className={styles.reservationDetail}>
-                  <i className="bx bx-calendar"></i> do{" "}
-                  {reservation.reservationEndDate}
-                </p>
-                <p className={styles.reservationDetail}>
-                  <i className="bx bx-map"></i> {reservation.locationName}
-                </p>
-                <p className={styles.price}>
-                  {reservation.reservationPrice} PLN
-                </p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </>
     );
@@ -100,7 +122,7 @@ const History: React.FC = () => {
 
   return (
     <div className={basicStyles.wrapper}>
-      <div className={basicStyles.wrapperMain}>
+      <div className={basicStyles.wrapper_main}>
         <div className={basicStyles.confirmed_wrapper}>
           {renderReservations(confirmed, true)}
         </div>

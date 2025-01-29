@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Body, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Body,
+  Post,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -6,6 +14,7 @@ import {
   ApiBody,
   ApiParam,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CarsService } from './cars.service';
 import { CarDto } from './dto/car.dto';
@@ -29,20 +38,46 @@ export class CarsController {
     status: 400,
     description: 'Zły rodzaj danych',
   })
-  @ApiBody({
-    description: 'Opcje filtrowania.',
-    type: FilterCarsDto,
+  @ApiQuery({
+    name: 'location',
+    description: 'Lokalizacja samochodu',
+    required: false,
   })
-  async getAllCars(@Body() carDto: FilterCarsDto): Promise<CarDto[]> {
+  @ApiQuery({
+    name: 'brand',
+    description: 'Marka samochodu',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'seats',
+    description: 'Liczba miejsc siedzących',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'minPrice',
+    description: 'Minimalna cena',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'maxPrice',
+    description: 'Maksymalna cena',
+    required: false,
+  })
+  async getAllCars(
+    @Query('location') location?: string,
+    @Query('brand') brand?: string,
+    @Query('seats') seats?: number,
+    @Query('minPrice') minPrice?: number,
+    @Query('maxPrice') maxPrice?: number,
+  ): Promise<CarDto[]> {
     return this.carsService.getAllCars(
-      carDto.location,
-      carDto.brand,
-      carDto.seats,
-      carDto.minPrice,
-      carDto.maxPrice,
+      location,
+      brand,
+      seats,
+      minPrice,
+      maxPrice,
     );
   }
-
   @Get('most-popular')
   @ApiOperation({ summary: 'Pobierz 3 najpopularniejsze samochody' })
   @ApiResponse({

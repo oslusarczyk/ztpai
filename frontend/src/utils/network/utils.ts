@@ -15,4 +15,18 @@ const getLocations = async () => {
   }
 };
 
-export { getLocations };
+const getBrands = async () => {
+  try {
+    const token = getToken();
+    const response = await sendRequest("/brands", {
+      method: "GET",
+      requiresAuth: true,
+      token,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { getLocations, getBrands };

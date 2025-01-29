@@ -5,9 +5,24 @@ import { getLocations } from "../../utils/network/utils";
 import { getMostPopularCars } from "../../utils/network/cars";
 import { getSeatsText, getLocationText } from "../../utils/functions";
 
+export interface Locations {
+  location_id: number;
+  location_name: string;
+}
+
+export interface Car {
+  car_id: number;
+  brand: string;
+  model: string;
+  photo: string;
+  location: string[];
+  seats_available: number;
+  price_per_day: number;
+}
+
 export const Main: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [locations, setLocations] = useState<Locations[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -27,21 +42,6 @@ export const Main: React.FC = () => {
       }
     })();
   }, []);
-
-  type Location = {
-    location_id: number;
-    location_name: string;
-  };
-
-  type Car = {
-    car_id: number;
-    brand: string;
-    model: string;
-    photo: string;
-    location: string[];
-    seats_available: number;
-    price_per_day: number;
-  };
 
   return (
     <>

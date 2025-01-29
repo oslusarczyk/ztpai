@@ -47,7 +47,7 @@ export class UserController {
     },
   })
   @ApiBody({
-    description: 'User registration details',
+    description: 'Dane do rejestracji',
     type: LoginUserDto,
   })
   register(@Body() loginUserDto: LoginUserDto) {

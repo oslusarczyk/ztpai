@@ -6,4 +6,8 @@ const getLocationText = (count: number): string => {
 
 const getSeatsText = (count: number): string => (count > 4 ? "osób" : "osoby");
 
-export { getLocationText, getSeatsText };
+const formatDate = (dateString: string): string => {
+  return new Date(dateString).toISOString().split("T")[0];
+};
+
+export { getLocationText, getSeatsText, formatDate };

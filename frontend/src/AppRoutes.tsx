@@ -9,6 +9,7 @@ import { UnloggedRoute } from "./components/protectedRoutes/loggedRoute";
 import History from "./pages/history/History";
 import Layout from "./pages/Layout";
 import CarDetails from "./pages/carDetails/carDetails";
+import Cars from "./pages/cars/cars";
 
 export const AppRoutes: React.FC = () => (
   <Routes>
@@ -27,6 +28,15 @@ export const AppRoutes: React.FC = () => (
         element={
           <ProtectedRoute>
             <CarDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="cars/"
+        element={
+          <ProtectedRoute>
+            <Cars />
           </ProtectedRoute>
         }
       />

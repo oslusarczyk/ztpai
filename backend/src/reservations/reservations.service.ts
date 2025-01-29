@@ -11,28 +11,40 @@ export class ReservationsService {
   constructor(private prisma: PrismaService) {}
 
   async getReservationsByUserId(user_id: string, status: ReservationStatus) {
-    return this.prisma.reservation.findMany({
+    const reservations = this.prisma.reservation.findMany({
       where: {
         user_id,
         reservation_status: status,
       },
       include: {
-        car: true,
+        car: {
+          include: {
+            brand: true,
+          },
+        },
         location: true,
       },
     });
+
+    return reservations;
   }
 
   async getPendingReservations() {
-    return this.prisma.reservation.findMany({
+    const reservations = this.prisma.reservation.findMany({
       where: {
         reservation_status: 'pending',
       },
       include: {
-        car: true,
+        car: {
+          include: {
+            brand: true,
+          },
+        },
         location: true,
       },
     });
+
+    return reservations;
   }
 
   async addReservation(

@@ -1,10 +1,24 @@
 import { sendRequest } from "../request";
 import { getToken } from "./auth";
 
+// const getCarDetails = async (id: string) => {
+//   try {
+//     const token = getToken();
+//     const response = await sendRequest(`/cars/${id}`, {
+//       method: "GET",
+//       requiresAuth: true,
+//       token,
+//     });
+//     return response;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
 const getReservationsByUserId = async (
   userId: string,
   status: "pending" | "cancelled" | "confirmed"
-): Promise<[]> => {
+) => {
   try {
     const token = getToken();
     const response = await sendRequest(`/reservations`, {

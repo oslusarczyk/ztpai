@@ -1,4 +1,5 @@
 import { sendRequest } from "../request";
+import { FilterParams } from "../../components/searchForm/searchForm";
 import { getToken } from "./auth";
 
 const getMostPopularCars = async () => {
@@ -29,4 +30,20 @@ const getCarDetails = async (id: string) => {
   }
 };
 
-export { getMostPopularCars, getCarDetails };
+const getCars = async (filters: FilterParams) => {
+  try {
+    const token = getToken();
+    const response = await sendRequest(`/cars`, {
+      method: "GET",
+      requiresAuth: true,
+      params: { ...filters },
+      token,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { getMostPopularCars, getCarDetails, getCars };
