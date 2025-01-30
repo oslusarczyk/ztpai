@@ -131,11 +131,29 @@ export class CarsController {
     status: 400,
     description: 'Nieprawidłowe dane.',
   })
-  @ApiBody({
-    description: 'Szczegóły nowego auta.',
-    type: CarDto,
-  })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Szczegóły nowego auta wraz ze zdjęciem',
+    schema: {
+      type: 'object',
+      properties: {
+        car_photo: {
+          type: 'string',
+          format: 'binary',
+          description: 'Plik obrazu auta (PNG lub JPEG, max 1MB)',
+        },
+        brand: { type: 'string', example: 'Toyota' },
+        model: { type: 'string', example: 'Corolla' },
+        year: { type: 'number', example: 2022 },
+        price: { type: 'number', example: 200 },
+        locations: {
+          type: 'string',
+          example: '[`9f8bcb24-d976-4390-8820-a139b562c1ee`]',
+          description: 'Lista ID lokalizacji',
+        },
+      },
+    },
+  })
   @UseInterceptors(
     FileInterceptor('car_photo', {
       storage: diskStorage({
