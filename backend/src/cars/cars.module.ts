@@ -4,6 +4,7 @@ import { CarsController } from './cars.controller';
 import { PrismaModule } from '@/prisma/prisma.module';
 import { MulterModule } from '@nestjs/platform-express';
 import * as path from 'path';
+import { ReddisCacheModule } from '@/redis/redis.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import * as path from 'path';
     MulterModule.register({
       dest: path.join(__dirname, '../../../public/img/uploads/'),
     }),
+    ReddisCacheModule,
   ],
   controllers: [CarsController],
   providers: [CarsService],

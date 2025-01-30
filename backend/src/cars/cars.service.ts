@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CarDto } from './dto/car.dto';
 import { PrismaService } from '@/prisma/prisma.service';
+import { RedisService } from '@/redis/redis.service';
 import * as fs from 'fs';
 import * as path from 'path';
-import { min } from 'class-validator';
 
 @Injectable()
 export class CarsService {
@@ -12,7 +12,10 @@ export class CarsService {
     '../../../public/src/assets',
   );
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redisService: RedisService,
+  ) {
     if (!fs.existsSync(this.UPLOAD_DIRECTORY)) {
       fs.mkdirSync(this.UPLOAD_DIRECTORY, { recursive: true });
     }
@@ -111,6 +114,11 @@ export class CarsService {
   }
 
   async getCarById(id: string): Promise<CarDto> {
+    const cacheKey = `car_${id}`;
+    const cachedCar = await this.redisService.get<CarDto>(cacheKey);
+    if (cachedCar) {
+      return cachedCar;
+    }
     const car = await this.prisma.car.findUnique({
       where: { car_id: id },
       include: {
@@ -140,6 +148,8 @@ export class CarsService {
         (carLocation) => carLocation.location.location_name,
       ),
     };
+
+    await this.redisService.set(cacheKey, result, 3600);
 
     return result;
   }

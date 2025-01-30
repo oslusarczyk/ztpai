@@ -7,6 +7,7 @@ import { BrandsModule } from './brands/brands.module';
 import { LocationsModule } from './locations/locations.module';
 import { CarsModule } from './cars/cars.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { ReddisCacheModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ReservationsModule } from './reservations/reservations.module';
     LocationsModule,
     CarsModule,
     ReservationsModule,
+    ReddisCacheModule,
   ],
   controllers: [],
   providers: [
