@@ -16,7 +16,6 @@ const sendRequest = async (
     ? `?${new URLSearchParams(params as Record<string, string>).toString()}`
     : "";
   const url = `${BASE_URL}${endpoint}${queryString}`;
-  console.log(url);
   const headers: HeadersInit = {
     ...(data instanceof FormData ? {} : { "Content-Type": "application/json" }),
     ...(requiresAuth && token ? { Authorization: `Bearer ${token}` } : {}),

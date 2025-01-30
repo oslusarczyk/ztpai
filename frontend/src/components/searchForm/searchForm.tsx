@@ -63,7 +63,7 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
         return updatedFilters;
       });
 
-      isFirstRender.current = false; // Oznaczamy, że pierwsze ustawienie zostało wykonane
+      isFirstRender.current = false;
     }
   }, [searchParams, onFilterChange]);
 

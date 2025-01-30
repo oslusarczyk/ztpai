@@ -62,7 +62,6 @@ const addReservation = async (reservation: {
   user_id: string;
 }) => {
   try {
-    console.log(reservation);
     const token = getToken();
     const response = await sendRequest(`/reservations`, {
       method: "POST",
