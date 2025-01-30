@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "../../styles/car_admin.module.css";
 import basicStyles from "../../styles/basic_styling.module.css";
 import { addCar } from "../../utils/network/cars";
 import { Locations, Brands } from "../../utils/types";
 import { getLocations, getBrands } from "../../utils/network/utils";
+import { toast } from "react-toastify";
 
 const CarAdmin: React.FC = () => {
   const [brands, setBrands] = useState<Brands[]>([]);
   const [locations, setLocations] = useState<Locations[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -30,6 +33,7 @@ const CarAdmin: React.FC = () => {
       }
     })();
   }, []);
+
   const [form, setForm] = useState({
     carPhoto: null as File | null,
     brand: "",
@@ -41,6 +45,24 @@ const CarAdmin: React.FC = () => {
     locations: [] as string[],
   });
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!form.carPhoto) newErrors.carPhoto = "Zdjęcie jest wymagane.";
+    if (!form.brand) newErrors.brand = "Marka jest wymagana.";
+    if (!form.model.trim()) newErrors.model = "Model jest wymagany.";
+    if (!form.price.trim()) newErrors.price = "Cena jest wymagana.";
+    if (!form.productionYear.trim())
+      newErrors.productionYear = "Rok produkcji jest wymagany.";
+    if (!form.description.trim())
+      newErrors.description = "Opis samochodu jest wymagany.";
+    if (form.locations.length === 0)
+      newErrors.locations = "Wybierz co najmniej jedną lokalizację.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Jeśli nie ma błędów, zwróć true
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -48,7 +70,7 @@ const CarAdmin: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    console.log(form);
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Czyszczenie błędu po poprawnym wpisaniu wartości
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,20 +79,28 @@ const CarAdmin: React.FC = () => {
         ...prev,
         carPhoto: e.target.files?.[0] || null,
       }));
+      setErrors((prev) => ({ ...prev, carPhoto: "" }));
     }
   };
 
   const handleCheckboxChange = (locationId: string) => {
-    setForm((prev) => ({
-      ...prev,
-      locations: prev.locations.includes(locationId)
+    setForm((prev) => {
+      const updatedLocations = prev.locations.includes(locationId)
         ? prev.locations.filter((id) => id !== locationId)
-        : [...prev.locations, locationId],
-    }));
+        : [...prev.locations, locationId];
+
+      return { ...prev, locations: updatedLocations };
+    });
+
+    setErrors((prev) => ({ ...prev, locations: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) {
+      toast.error("Uzupełnij wszystkie wymagane pola.");
+      return;
+    }
 
     const formData = new FormData();
     if (form.carPhoto) {
@@ -83,13 +113,27 @@ const CarAdmin: React.FC = () => {
     formData.append("production_year", form.productionYear);
     formData.append("car_description", form.description);
     formData.append("locations", JSON.stringify(form.locations));
-    console.log("Form data submitted:", formData);
 
     try {
-      const response = await addCar(formData);
-      console.log("Samochód dodany:", response);
+      await addCar(formData);
+      toast.success("Samochód został poprawnie dodany.");
+
+      setForm({
+        carPhoto: null,
+        brand: "",
+        model: "",
+        price: "",
+        seats: "4",
+        productionYear: "",
+        description: "",
+        locations: [],
+      });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error) {
-      console.error("Błąd:", error);
+      toast.error("Wystąpił błąd przy dodawaniu auta.");
     }
   };
 
@@ -105,8 +149,12 @@ const CarAdmin: React.FC = () => {
                 type="file"
                 name="carPhoto"
                 id="car_photo"
+                ref={fileInputRef}
                 onChange={handleFileChange}
               />
+              {errors.carPhoto && (
+                <span className={styles.error}>{errors.carPhoto}</span>
+              )}
             </label>
 
             <label htmlFor="brand_select">
@@ -123,6 +171,9 @@ const CarAdmin: React.FC = () => {
                   </option>
                 ))}
               </select>
+              {errors.brand && (
+                <span className={styles.error}>{errors.brand}</span>
+              )}
             </label>
 
             <label htmlFor="model_select">
@@ -135,6 +186,9 @@ const CarAdmin: React.FC = () => {
                 value={form.model}
                 onChange={handleChange}
               />
+              {errors.model && (
+                <span className={styles.error}>{errors.model}</span>
+              )}
             </label>
 
             <label htmlFor="price_input">
@@ -146,20 +200,9 @@ const CarAdmin: React.FC = () => {
                 value={form.price}
                 onChange={handleChange}
               />
-            </label>
-
-            <label htmlFor="seats_select">
-              Liczba miejsc
-              <select
-                name="seats"
-                id="seats_select"
-                value={form.seats}
-                onChange={handleChange}
-              >
-                <option value="4">4 miejsc</option>
-                <option value="5">5 miejsc</option>
-                <option value="7">7 miejsc</option>
-              </select>
+              {errors.price && (
+                <span className={styles.error}>{errors.price}</span>
+              )}
             </label>
 
             <label htmlFor="production_year">
@@ -167,13 +210,16 @@ const CarAdmin: React.FC = () => {
               <input
                 type="number"
                 name="productionYear"
+                placeholder="2020"
                 id="production_year"
-                placeholder="Rok produkcji"
                 min="1900"
                 max="2024"
                 value={form.productionYear}
                 onChange={handleChange}
               />
+              {errors.productionYear && (
+                <span className={styles.error}>{errors.productionYear}</span>
+              )}
             </label>
 
             <div className={styles.checkbox}>
@@ -200,6 +246,9 @@ const CarAdmin: React.FC = () => {
                   </label>
                 ))}
               </div>
+              {errors.locations && (
+                <span className={styles.error}>{errors.locations}</span>
+              )}
             </div>
 
             <label htmlFor="car_description">
@@ -208,10 +257,13 @@ const CarAdmin: React.FC = () => {
                 name="description"
                 id="car_description"
                 rows={7}
-                placeholder="Dodaj opis samochodu"
+                placeholder="Napisz tutaj opis samochodu"
                 value={form.description}
                 onChange={handleChange}
               ></textarea>
+              {errors.description && (
+                <span className={styles.error}>{errors.description}</span>
+              )}
             </label>
 
             <button type="submit">Dodaj samochód</button>

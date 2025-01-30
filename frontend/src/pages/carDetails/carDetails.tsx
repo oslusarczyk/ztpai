@@ -8,18 +8,8 @@ import { getSeatsText } from "../../utils/functions";
 import { useAuth } from "../../context/AuthContext";
 import { addReservation } from "../../utils/network/reservations";
 import { Locations as Location } from "../../utils/types";
-
-interface CarDetailsProps {
-  car_id: string;
-  model: string;
-  price_per_day: number;
-  seats_available: number;
-  photo: string;
-  production_year: number;
-  car_description: string;
-  brand: string;
-  location: string;
-}
+import { toast } from "react-toastify";
+import { CarDetailsProps } from "../../utils/types";
 
 const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,14 +41,29 @@ const CarDetails: React.FC = () => {
 
   const handleReservation = async (event: React.FormEvent) => {
     event.preventDefault();
-    addReservation({
-      reservation_start_date: reservationStartDate,
-      reservation_end_date: reservationEndDate,
-      location_id: selectedLocation || "",
-      car_id: id || "",
-      user_id: userId,
-    });
-    console.log("TODO");
+
+    if (!reservationStartDate || !reservationEndDate || !selectedLocation) {
+      toast.error("Wszystkie pola rezerwacji są wymagane!");
+      return;
+    }
+
+    try {
+      await addReservation({
+        reservation_start_date: reservationStartDate,
+        reservation_end_date: reservationEndDate,
+        location_id: selectedLocation,
+        car_id: id || "",
+        user_id: userId,
+      });
+
+      toast.success("Rezerwacja zakończona sukcesem!");
+
+      setReservationStartDate("");
+      setReservationEndDate("");
+      setSelectedLocation(null);
+    } catch (error) {
+      toast.error("Nie udało się zarezerwować samochodu. Spróbuj ponownie.");
+    }
   };
 
   if (loading) return <p>Ładowanie szczegółów samochodu...</p>;

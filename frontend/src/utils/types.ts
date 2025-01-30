@@ -49,3 +49,15 @@ export interface Brands {
   brand_id: number;
   brand_name: string;
 }
+
+export interface CarDetailsProps {
+  car_id: string;
+  model: string;
+  price_per_day: number;
+  seats_available: number;
+  photo: string;
+  production_year: number;
+  car_description: string;
+  brand: string;
+  location: string;
+}

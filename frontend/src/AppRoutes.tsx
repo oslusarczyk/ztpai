@@ -4,7 +4,7 @@ import { Login } from "./pages/login/Login";
 import { Register } from "./pages/register/Register";
 import { Error } from "./pages/error/Error";
 import { ProtectedRoute } from "./components/protectedRoutes/protectedRoute";
-import { Main } from "./pages/main/main";
+import { Main } from "./pages/main/Main";
 import { UnloggedRoute } from "./components/protectedRoutes/loggedRoute";
 import History from "./pages/history/History";
 import Layout from "./pages/Layout";

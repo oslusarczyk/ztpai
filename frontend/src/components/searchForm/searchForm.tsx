@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import basicStyles from "../../styles/basic_styling.module.css";
 import styles from "../../styles/main.module.css";
 import { getBrands, getLocations } from "../../utils/network/utils";
 import { Locations } from "../../utils/types";
-import { useSearchParams } from "react-router-dom"; // Import this
+import { useSearchParams } from "react-router-dom";
 
 export interface FilterParams {
   location?: string;
@@ -23,27 +23,11 @@ interface Props {
 }
 
 const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
-  const [locations, setLocations] = useState<Locations[]>();
-  const [brands, setBrands] = useState<Brands[]>();
+  const [locations, setLocations] = useState<Locations[]>([]);
+  const [brands, setBrands] = useState<Brands[]>([]);
   const [filters, setFilters] = useState<FilterParams>({});
   const [searchParams] = useSearchParams();
-  useEffect(() => {
-    const locationFromUrl = searchParams.get("location");
-    if (locationFromUrl) {
-      setFilters((prev) => ({ ...prev, location: locationFromUrl }));
-    }
-  }, [searchParams]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  useEffect(() => {
-    onFilterChange(filters);
-  }, [filters]);
+  const isFirstRender = useRef(true); // Śledzenie pierwszego renderowania
 
   useEffect(() => {
     (async () => {
@@ -53,8 +37,7 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
       } catch (error) {
         console.error(error);
       }
-    })();
-    (async () => {
+
       try {
         const brands = await getBrands();
         setBrands(brands);
@@ -63,6 +46,38 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      // Tylko pierwsze ustawienie wartości z URL
+      const locationFromUrl = searchParams.get("location");
+
+      setFilters((prev) => {
+        const updatedFilters = { ...prev };
+
+        if (locationFromUrl) {
+          updatedFilters.location = locationFromUrl;
+        }
+
+        onFilterChange(updatedFilters); // Wywołanie `onFilterChange` tylko raz
+        return updatedFilters;
+      });
+
+      isFirstRender.current = false; // Oznaczamy, że pierwsze ustawienie zostało wykonane
+    }
+  }, [searchParams, onFilterChange]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFilters((prev) => {
+      const updatedFilters = { ...prev, [name]: value };
+      onFilterChange(updatedFilters);
+      return updatedFilters;
+    });
+  };
 
   return (
     <div
@@ -78,31 +93,37 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
             value={filters.location || ""}
           >
             <option value="">Wszystkie</option>
-            {locations &&
-              locations.map((location, index) => (
-                <option key={index} value={location.location_name}>
-                  {location.location_name}
-                </option>
-              ))}
+            {locations.map((location, index) => (
+              <option key={index} value={location.location_name}>
+                {location.location_name}
+              </option>
+            ))}
           </select>
         </label>
 
         <label>
           Marka:
-          <select name="brand" onChange={handleChange}>
+          <select
+            name="brand"
+            onChange={handleChange}
+            value={filters.brand || ""}
+          >
             <option value="">Wszystkie</option>
-            {brands &&
-              brands.map((brand, index) => (
-                <option key={index} value={brand.brand_name}>
-                  {brand.brand_name}
-                </option>
-              ))}
+            {brands.map((brand, index) => (
+              <option key={index} value={brand.brand_name}>
+                {brand.brand_name}
+              </option>
+            ))}
           </select>
         </label>
 
         <label>
           Liczba miejsc:
-          <select name="seats" onChange={handleChange}>
+          <select
+            name="seats"
+            onChange={handleChange}
+            value={filters.seats || ""}
+          >
             <option value="">Dowolne</option>
             <option value="4">4 miejsca</option>
             <option value="5">5 miejsc</option>
@@ -119,6 +140,7 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
               min="0"
               max="500"
               onChange={handleChange}
+              value={filters.minPrice || ""}
             />
           </label>
           <label>
@@ -129,6 +151,7 @@ const SearchForm: React.FC<Props> = ({ onFilterChange }) => {
               min="0"
               max="500"
               onChange={handleChange}
+              value={filters.maxPrice || ""}
             />
           </label>
         </div>
