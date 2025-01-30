@@ -16,6 +16,7 @@ COPY webpack-hmr.config.js ./
 COPY src ./src
 
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 
 RUN npm run build
 CMD ["npm", "run", "watch:dev"]
